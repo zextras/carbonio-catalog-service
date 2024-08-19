@@ -1,0 +1,33 @@
+---
+openapi: 3.0.3
+info:
+  title: Carbonio Catalog API
+  version: 1.0.0-BETA
+servers:
+- url: https://kc-dev1-prymta1.demo.zextras.io
+- url: https://kc-dev2-prymta1.demo.zextras.io
+- url: https://kc-dev3-prymta1.demo.zextras.io
+tags:
+- name: Health Resource
+paths:
+  /health:
+    get:
+      tags:
+      - Health Resource
+      responses:
+        "200":
+          description: OK
+  /health/live:
+    get:
+      tags:
+      - Health Resource
+      responses:
+        "200":
+          description: OK
+  /health/ready:
+    get:
+      tags:
+      - Health Resource
+      responses:
+        "200":
+          description: OK
