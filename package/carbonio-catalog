@@ -1,0 +1,7 @@
+#!/bin/bash
+
+JAVA_HOME="/opt/zextras/common/lib/jvm/java"
+export JAVA_HOME
+/opt/zextras/common/bin/java \
+  -Xms1024m \
+  -jar /usr/share/carbonio/carbonio-catalog/quarkus-run.jar

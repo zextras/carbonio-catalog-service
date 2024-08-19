@@ -1,0 +1,23 @@
+[Unit]
+Description=Carbonio Catalog sidecar proxy
+Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/consul connect envoy \
+    -token-file /etc/carbonio/catalog/service-discover/token \
+    -admin-bind localhost:0 \
+    -sidecar-for carbonio-catalog
+Restart=on-failure
+RestartSec=15
+User=carbonio-catalog
+KillMode=process
+KillSignal=SIGKILL
+LimitNOFILE=65536
+TimeoutSec=120
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target
