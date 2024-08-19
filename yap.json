@@ -1,0 +1,11 @@
+{
+  "name": "carbonio-catalog",
+  "description": "Zextras Carbonio Catalog",
+  "buildDir": "/tmp/",
+  "output": "artifacts",
+  "projects": [
+    {
+      "name": "package"
+    }
+  ]
+}

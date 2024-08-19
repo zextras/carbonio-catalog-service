@@ -1,0 +1,122 @@
+pkgname="carbonio-catalog"
+pkgver="0.0.1"
+pkgrel="1"
+pkgdesc="Carbonio Catalog"
+pkgdesclong=(
+  "Carbonio Catalog"
+)
+maintainer="Zextras <packages@zextras.com>"
+copyright=(
+  "2023-2024, Zextras <https://www.zextras.com>"
+)
+arch=('x86_64')
+section="admin"
+priority="optional"
+url="https://www.zextras.com/"
+makedepends=(
+  "rsync"
+)
+depends=(
+  "carbonio-openjdk"
+  "pending-setups"
+)
+source=(
+  "${pkgname}"
+  "${pkgname}.hcl"
+  "${pkgname}-intentions.json"
+  "${pkgname}-pending-setup.sh"
+  "${pkgname}-policies.json"
+  "${pkgname}.service"
+  "${pkgname}-service-protocol.json"
+  "${pkgname}-setup"
+  "${pkgname}-sidecar.service"
+)
+sha256sums=('SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP')
+
+package() {
+  cd "${srcdir}"/../../staging/target/
+
+  install -Ddm 755 quarkus-app \
+    "${pkgdir}/usr/share/carbonio/carbonio-catalog"
+  rsync -a quarkus-app/* \
+    "${pkgdir}/usr/share/carbonio/carbonio-catalog/"
+
+  cd "${srcdir}"
+
+  install -Dm755 "carbonio-catalog" \
+    "${pkgdir}/usr/bin/carbonio-catalog"
+
+  install -Dm 755 carbonio-catalog-setup \
+    "${pkgdir}/usr/bin/carbonio-catalog-setup"
+
+  install -Dm644 "carbonio-catalog.service" \
+    "${pkgdir}/lib/systemd/system/carbonio-catalog.service"
+
+  install -Dm 644 carbonio-catalog-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-catalog-sidecar.service"
+
+  install -Dm 644 carbonio-catalog.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-catalog.hcl"
+
+  install -Dm 644 carbonio-catalog-pending-setup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-catalog.sh"
+
+  install -Dm 644 carbonio-catalog-intentions.json \
+    "${pkgdir}/etc/carbonio/catalog/service-discover/intentions.json"
+
+  install -Dm 644 carbonio-catalog-policies.json \
+    "${pkgdir}/etc/carbonio/catalog/service-discover/policies.json"
+
+  install -Dm 644 carbonio-catalog-service-protocol.json \
+    "${pkgdir}/etc/carbonio/catalog/service-discover/service-protocol.json"
+}
+
+postinst() {
+  getent group 'carbonio-catalog' >/dev/null ||
+    groupadd -r 'carbonio-catalog'
+  getent passwd 'carbonio-catalog' >/dev/null ||
+    useradd -r -M -g 'carbonio-catalog' -s /sbin/nologin 'carbonio-catalog'
+
+  mkdir -p "/var/log/carbonio/catalog/"
+  chown carbonio-catalog:carbonio-catalog "/usr/bin/carbonio-catalog"
+  chown carbonio-catalog:carbonio-catalog "/var/log/carbonio/catalog"
+  chown -R carbonio-catalog:carbonio-catalog "/usr/share/carbonio/carbonio-catalog"
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-catalog.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-catalog-sidecar.service >/dev/null 2>&1 || :
+  fi
+
+  systemctl start carbonio-catalog
+
+  echo "======================================================"
+  echo "Carbonio Catalog installed successfully!     "
+  echo "You must run pending-setups to configure it correctly."
+  echo "======================================================"
+}
+
+prerm() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable carbonio-catalog.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-catalog-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-catalog.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-catalog-sidecar.service >/dev/null 2>&1 || :
+  fi
+}
+
+postrm() {
+  rm -f /etc/carbonio/catalog/service-discover/token
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+  fi
+}
