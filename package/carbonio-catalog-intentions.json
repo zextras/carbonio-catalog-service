@@ -3,7 +3,8 @@
   "Name": "carbonio-catalog",
   "Sources": [
     {
-      "Name": "carbonio-proxy"
+      "Name": "carbonio-proxy",
+      "Action": "allow"
     }
   ]
 }

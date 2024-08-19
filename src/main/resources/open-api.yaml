@@ -4,6 +4,7 @@ info:
   title: Carbonio Catalog API
   version: 1.0.0-BETA
 servers:
+- url: http://localhost:10000
 - url: https://kc-dev1-prymta1.demo.zextras.io
 - url: https://kc-dev2-prymta1.demo.zextras.io
 - url: https://kc-dev3-prymta1.demo.zextras.io
