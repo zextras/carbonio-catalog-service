@@ -1,12 +1,12 @@
 services {
   check {
-    http     = "http://127.78.0.24:10000/health/"
+    http     = "http://127.78.0.28:10000/health/"
     method   = "GET"
     timeout  = "1s"
     interval = "5s"
   }
   meta = {
-    prom_port = "21501"
+    prom_port = "21512"
   }
   tags = [
     "prometheus-exporter"
@@ -14,36 +14,21 @@ services {
   connect {
     sidecar_service {
       proxy {
-        local_service_address = "127.78.0.24"
+        local_service_address = "127.78.0.28"
         expose {
           paths = [
             {
               path            = "/metrics",
               local_path_port = 10000
-              listener_port   = 21501
+              listener_port   = 21512
             }
           ]
         }
         upstreams = [
-          {
-            destination_name   = "carbonio-mailbox-db"
-            local_bind_port    = 20000
-            local_bind_address = "127.78.0.24"
-          },
-          {
-            destination_name   = "carbonio-mailbox"
-            local_bind_port    = 20001
-            local_bind_address = "127.78.0.24"
-          },
-          {
-            destination_name   = "carbonio-mailbox-admin"
-            local_bind_port    = 20002
-            local_bind_address = "127.78.0.24"
-          },
         ]
       }
     }
   }
-  name = "carbonio-storages"
+  name = "carbonio-catalog"
   port = 10000
 }
