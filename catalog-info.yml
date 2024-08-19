@@ -1,0 +1,37 @@
+# see https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component for more component conf info
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: carbonio-catalog
+  title: Carbonio Catalog
+  description: Carbonio services catalog
+  tags:
+    - java
+    - github
+  annotations:
+    github.com/project-slug: Zextras/carbonio-catalog-service
+spec:
+  type: service
+  lifecycle: production
+  owner: keyboard-crackers
+  system: carbonio
+  providesApis:
+    - open-api
+
+---
+
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: open-api
+  title: Carbonio Catalog API
+  tags:
+    - rest
+  annotations:
+    github.com/project-slug: Zextras/carbonio-catalog-service
+spec:
+  type: openapi
+  lifecycle: production
+  owner: keyboard-crackers
+  definition:
+    $text: https://github.com/Zextras/carbonio-catalog-service/blob/devel/src/main/resources/open-api.yaml
