@@ -1,0 +1,33 @@
+# IDEs
+.idea/
+.vscode
+.classpath
+.project
+.settings/
+*.iml
+
+# MacOS
+.DS_Store
+
+# Java Class Files
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+*.zip
+
+# Maven
+target/
+/.mvn
+/.maven
+/.repository
+/artifacts
+.flattened-pom.xml
+
+#Other files
+consul_token
+
+# Application log files
+*.log
