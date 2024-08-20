@@ -12,6 +12,7 @@ import java.util.Map;
 @RegisterRestClient
 public interface ConsulCatalogApi {
 
+  // See: https://developer.hashicorp.com/consul/api-docs/catalog#list-services
   @GET
   @Path("/services")
   Map<String, List<String>> getAllServices(
