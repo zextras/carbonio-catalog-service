@@ -9,7 +9,7 @@ public class ServicePredicates {
   }
 
   private static Predicate<String> excludeSidecars() {
-    return x -> !x.contains("sidecar-proxy");
+    return x -> !x.endsWith("sidecar-proxy");
   }
 
   private static Predicate<String> excludeConsul() {
