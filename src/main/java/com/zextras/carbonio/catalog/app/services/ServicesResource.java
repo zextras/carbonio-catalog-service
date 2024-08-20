@@ -8,7 +8,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
@@ -31,7 +30,10 @@ public class ServicesResource {
   public GetServicesResponse getServices() {
     log.infof("GET services");
     final var services = consulCatalogApi.getAll(token.value().trim());
-    final var serviceNames = services.keySet().toArray(new String[0]);
+    final var serviceNames = services.keySet()
+        .stream()
+        .filter(x -> !x.equalsIgnoreCase("consul"))
+        .toArray(String[]::new);
     return new GetServicesResponse(serviceNames);
   }
 }

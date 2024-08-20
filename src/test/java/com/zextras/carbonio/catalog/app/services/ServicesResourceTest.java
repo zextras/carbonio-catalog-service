@@ -39,7 +39,7 @@ class ServicesResourceTest {
         .get("services")
         .then()
         .statusCode(200)
-        .body("items.size()", is(3));
+        .body("items.size()", is(2));
   }
 
   @Test
@@ -51,7 +51,6 @@ class ServicesResourceTest {
         .statusCode(200)
         .body("items", hasItems(
                 "carbonio-advanced",
-                "carbonio-files",
-                "consul"));
+                "carbonio-files"));
   }
 }
