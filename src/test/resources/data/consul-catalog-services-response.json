@@ -1,6 +1,0 @@
-{
-  "carbonio-advanced": [],
-  "carbonio-advanced-sidecar-proxy": [],
-  "carbonio-files": [ "prometheus-exporter" ],
-  "carbonio-files-sidecar-proxy": [ "prometheus-exporter" ]
-}
