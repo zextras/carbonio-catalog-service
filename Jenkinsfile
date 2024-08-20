@@ -152,6 +152,21 @@ pipeline {
                                 }
                             }
                         }
+                        stage('Ubuntu 24.04') {
+                            agent {
+                                node {
+                                    label 'yap-agent-ubuntu-24.04-v2'
+                                }
+                            }
+                            steps {
+                                buildDebPackages("ubuntu-noble")
+                            }
+                            post {
+                                always {
+                                    archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
+                                }
+                            }
+                        }
                         stage('RHEL') {
                             agent {
                                 node {
@@ -195,6 +210,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
                 unstash 'artifacts-rocky-9'
 
@@ -213,6 +229,11 @@ pipeline {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-devel/pool/",
                             "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*noble*.deb",
+                            "target": "ubuntu-devel/pool/",
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
                         },''' + getRpmSpec("centos8-devel", "8") + ''',''' + getRpmSpec("rhel9-devel", "9") + '''
                         ]
                     }'''
@@ -231,6 +252,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
                 unstash 'artifacts-rocky-9'
 
@@ -250,6 +272,11 @@ pipeline {
                             "target": "ubuntu-playground/pool/",
                             "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         },
+                        {
+                            "pattern": "artifacts/*noble*.deb",
+                            "target": "ubuntu-playground/pool/",
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
+                        },
                         ''' + getRpmSpec("centos8-playground", "8") + ''',''' + getRpmSpec("rhel9-playground", "9") + ''']
                     }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
@@ -266,6 +293,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
                 unstash 'artifacts-rocky-9'
 
@@ -288,6 +316,11 @@ pipeline {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-rc/pool/",
                             "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*noble*.deb",
+                            "target": "ubuntu-rc/pool/",
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
                         }]
                         }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
