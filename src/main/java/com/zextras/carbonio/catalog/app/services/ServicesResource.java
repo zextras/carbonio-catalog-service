@@ -31,7 +31,7 @@ public class ServicesResource {
   @GET
   public GetServicesResponse getServices() {
     log.info("GET services");
-    final var services = consulCatalogApi.getAll(token.value().trim());
+    final var services = consulCatalogApi.getAllServices(token.value().trim());
     final var serviceNames = ServiceName.fromAll(services.keySet());
     return new GetServicesResponse(serviceNames);
   }

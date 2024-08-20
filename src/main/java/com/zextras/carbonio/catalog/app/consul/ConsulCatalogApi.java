@@ -14,7 +14,7 @@ public interface ConsulCatalogApi {
 
   @GET
   @Path("/services")
-  Map<String, List<String>> getAll(
+  Map<String, List<String>> getAllServices(
       @HeaderParam("X-Consul-Token") String token);
 }
 
