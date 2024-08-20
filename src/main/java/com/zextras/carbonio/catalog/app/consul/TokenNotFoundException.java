@@ -1,4 +1,4 @@
-package com.zextras.carbonio.catalog.app;
+package com.zextras.carbonio.catalog.app.consul;
 
 public class TokenNotFoundException extends RuntimeException {
 

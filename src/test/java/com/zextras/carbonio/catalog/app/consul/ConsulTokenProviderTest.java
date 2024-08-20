@@ -1,4 +1,4 @@
-package com.zextras.carbonio.catalog.app;
+package com.zextras.carbonio.catalog.app.consul;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,14 +9,14 @@ class ConsulTokenProviderTest {
 
   @Test
   void canReadAToken() {
-    String path = getClass().getClassLoader().getResource("data/token").getFile();
-    var token = new ConsulTokenProvider(path).getToken();
+    final var path = getClass().getClassLoader().getResource("data/token").getFile();
+    final var token = new ConsulTokenProvider(path).getToken();
     assertEquals("sample token", token.value());
   }
 
   @Test
   void throwsTokenNotFoundExceptionOnMissingToken() {
-    var tokenProvider = new ConsulTokenProvider("/this/path/does-not/exists");
+    final var tokenProvider = new ConsulTokenProvider("/this/path/does-not/exists");
     assertThrows(TokenNotFoundException.class, tokenProvider::getToken);
   }
 
