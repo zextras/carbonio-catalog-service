@@ -11,12 +11,15 @@ import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
+import java.util.function.Predicate;
+
 @ApplicationScoped
 @Path("/services")
 @Produces({MediaType.APPLICATION_JSON})
 @Tag(name = "Services Resource")
 public class ServicesResource {
   private static final Logger log = Logger.getLogger("SERVICES");
+
   private final ConsulToken token;
   private final ConsulCatalogApi consulCatalogApi;
 
@@ -32,8 +35,20 @@ public class ServicesResource {
     final var services = consulCatalogApi.getAll(token.value().trim());
     final var serviceNames = services.keySet()
         .stream()
-        .filter(x -> !x.equalsIgnoreCase("consul"))
+        .filter(excludeUninteresting())
         .toArray(String[]::new);
     return new GetServicesResponse(serviceNames);
+  }
+
+  private Predicate<String> excludeUninteresting() {
+    return excludeConsul().and(excludeSidecars());
+  }
+
+  private Predicate<String> excludeSidecars() {
+    return x -> !x.contains("sidecar-proxy");
+  }
+
+  private static Predicate<String> excludeConsul() {
+    return x -> !x.equals("consul");
   }
 }

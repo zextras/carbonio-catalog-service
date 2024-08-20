@@ -13,7 +13,10 @@ public class ConsulTestResource implements QuarkusTestResourceLifecycleManager {
   public Map<String, String> start() {
     consul = new ConsulContainer("consul:1.10.12")
         .withConsulCommand("services register -name=carbonio-advanced")
-        .withConsulCommand("services register -name=carbonio-files");
+        .withConsulCommand("services register -name=carbonio-advanced-sidecar-proxy")
+        .withConsulCommand("services register -name=carbonio-files")
+        .withConsulCommand("services register -name=carbonio-files-sidecar-proxy")
+    ;
     consul.start();
     return Map.of("consul.url", String.format("http://%s:%d", consul.getHost(), consul.getFirstMappedPort()));
   }
