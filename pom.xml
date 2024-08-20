@@ -10,12 +10,12 @@
   <name>carbonio catalog service</name>
 
   <properties>
-    <compiler-plugin.version>3.11.0</compiler-plugin.version>
+    <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <quarkus.platform.version>3.9.3</quarkus.platform.version>
-    <surefire-plugin.version>3.1.2</surefire-plugin.version>
+    <quarkus.platform.version>3.13.2</quarkus.platform.version>
+    <surefire-plugin.version>3.4.0</surefire-plugin.version>
     <skip.open-api.schema.generation>false</skip.open-api.schema.generation>
   </properties>
 
@@ -72,13 +72,7 @@
     <dependency>
       <groupId>org.wiremock</groupId>
       <artifactId>wiremock</artifactId>
-      <version>3.5.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>1.19.7</version>
+      <version>3.9.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -93,7 +87,7 @@
       <plugin>
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-open-api-maven-plugin</artifactId>
-        <version>3.9.0</version>
+        <version>3.12.0</version>
         <executions>
           <execution>
             <goals>
@@ -136,7 +130,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -150,7 +144,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.11</version>
+        <version>0.8.12</version>
         <executions>
           <execution>
             <id>default-prepare-agent</id>
