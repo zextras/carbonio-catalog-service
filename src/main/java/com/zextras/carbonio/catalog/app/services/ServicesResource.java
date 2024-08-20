@@ -1,5 +1,6 @@
 package com.zextras.carbonio.catalog.app.services;
 
+import com.zextras.carbonio.catalog.ServiceName;
 import com.zextras.carbonio.catalog.app.consul.ConsulCatalogApi;
 import com.zextras.carbonio.catalog.app.consul.ConsulToken;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,8 +11,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
-
-import static com.zextras.carbonio.catalog.app.services.ServicePredicates.excludeUninteresting;
 
 @ApplicationScoped
 @Path("/services")
@@ -33,10 +32,7 @@ public class ServicesResource {
   public GetServicesResponse getServices() {
     log.info("GET services");
     final var services = consulCatalogApi.getAll(token.value().trim());
-    final var serviceNames = services.keySet()
-        .stream()
-        .filter(excludeUninteresting())
-        .toArray(String[]::new);
+    final var serviceNames = ServiceName.fromAll(services.keySet());
     return new GetServicesResponse(serviceNames);
   }
 }
