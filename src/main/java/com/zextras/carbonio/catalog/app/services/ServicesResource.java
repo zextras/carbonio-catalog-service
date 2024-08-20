@@ -11,7 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
-import java.util.function.Predicate;
+import static com.zextras.carbonio.catalog.app.services.ServicePredicates.excludeUninteresting;
 
 @ApplicationScoped
 @Path("/services")
@@ -31,24 +31,12 @@ public class ServicesResource {
 
   @GET
   public GetServicesResponse getServices() {
-    log.infof("GET services");
+    log.info("GET services");
     final var services = consulCatalogApi.getAll(token.value().trim());
     final var serviceNames = services.keySet()
         .stream()
         .filter(excludeUninteresting())
         .toArray(String[]::new);
     return new GetServicesResponse(serviceNames);
-  }
-
-  private Predicate<String> excludeUninteresting() {
-    return excludeConsul().and(excludeSidecars());
-  }
-
-  private Predicate<String> excludeSidecars() {
-    return x -> !x.contains("sidecar-proxy");
-  }
-
-  private static Predicate<String> excludeConsul() {
-    return x -> !x.equals("consul");
   }
 }
