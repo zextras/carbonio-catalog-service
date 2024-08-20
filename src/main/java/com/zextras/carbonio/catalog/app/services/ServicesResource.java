@@ -14,6 +14,7 @@ import org.jboss.logging.Logger;
 @Tag(name = "Services Resource")
 public class ServicesResource {
   private static final Logger log = Logger.getLogger("SERVICES");
+
   @GET
   public GetServicesResponse getServices() {
     log.infof("GET services");
