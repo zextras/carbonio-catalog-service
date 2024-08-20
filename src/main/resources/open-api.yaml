@@ -10,6 +10,7 @@ servers:
 - url: https://kc-dev3-prymta1.demo.zextras.io
 tags:
 - name: Health Resource
+- name: Services Resource
 paths:
   /health:
     get:
@@ -32,3 +33,23 @@ paths:
       responses:
         "200":
           description: OK
+  /services:
+    get:
+      tags:
+      - Services Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetServicesResponse"
+components:
+  schemas:
+    GetServicesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: string
