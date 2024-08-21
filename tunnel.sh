@@ -39,7 +39,6 @@ trap cleanup EXIT
 rsync root@"${name}"-svcs."${domain}":/etc/carbonio/catalog/service-discover/token consul_token
 
 ssh -N -L ${consul_port}:localhost:${consul_port} \
-    -L ${postgres_port}:localhost:${postgres_port} \
     root@"${name}"-svcs."${domain}" &
 
 ssh_pid1=$!
