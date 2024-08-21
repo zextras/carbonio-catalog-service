@@ -13,13 +13,20 @@
       }
     }
   ],
+  "service_prefix": [
+    {
+      "": {
+        "policy": "read"
+      }
+    }
+  ],
   "service": [
     {
       "carbonio-catalog": {
-      "policy": "write"
-      }, 
+        "policy": "write"
+      },
       "carbonio-catalog-sidecar-proxy": {
-      "policy": "write"
+        "policy": "write"
       }
     }
   ]
