@@ -31,15 +31,15 @@ source=(
   "${pkgname}-setup"
   "${pkgname}-sidecar.service"
 )
-sha256sums=('SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP')
+sha256sums=('599d10048be4ae408c498bba33b157015006d61916d4a051cfdbf31933f130cc'
+  'ccc87f71a36915a2006a37f7c3fef4f934e1f1b0c6e43d8f03dc2200f3d56940'
+  '5fed7682316886fcd053b545c42a25ff2fc9d5da949e3da97134e70e8ab25450'
+  '1d00aac2847a15cfd990d64ba36d092caf82905280f9fba599d4d4edf40492ed'
+  '376c53798291548ef9968a60b4dbef6fdd9c255a6dac11adc6b1cfcc42c2b727'
+  'd69135921ef48bfbac53154280ac801c579e772fbc75d9b9663133c93dad7f90'
+  '2f2aedfa59a8f032fe5dfbc6650f6e5086c313a096e99e5003539deaf5a663cd'
+  '934e8c0c61be5c0cad1815581f1b4b74deb463c1cea8b513f0f2308a9586b7a2'
+  '2dc8ee0387d2106599ef60996f11e87ea5811d9c4bb62f9bc722944f7d8829a8')
 
 package() {
   cd "${srcdir}"/../../staging/target/
