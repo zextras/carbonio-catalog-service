@@ -7,7 +7,6 @@ import io.quarkus.test.Mock;
 import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.inject.Produces;
-import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,8 @@ import static org.hamcrest.Matchers.*;
 @WithTestResource(value = ConsulTestResource.class)
 class ServicesResourceTest {
 
+  public static final String[] ALL_SERVICES = {"carbonio-advanced", "carbonio-files", "carbonio-files-sidecar-proxy", "carbonio-advanced-sidecar-proxy", "consul"};
+
   @Mock
   @Produces
   ConsulToken testConsulToken() {
@@ -33,16 +34,17 @@ class ServicesResourceTest {
 
   @BeforeEach
   void setUp() throws IOException, InterruptedException {
-    registerServices("carbonio-advanced", "carbonio-files", "carbonio-files-sidecar-proxy", "carbonio-advanced-sidecar-proxy");
+    registerServices(ALL_SERVICES);
   }
 
   @AfterEach
   void tearDown() throws IOException, InterruptedException {
-    deregisterServices("carbonio-advanced", "carbonio-files", "carbonio-files-sidecar-proxy", "carbonio-advanced-sidecar-proxy");
+    deregisterServices(ALL_SERVICES);
   }
 
-  @Ignore
-  void getEmptyServices() {
+  @Test
+  void getEmptyServices() throws IOException, InterruptedException {
+    deregisterServices(ALL_SERVICES);
     given()
         .when()
         .get("services")
