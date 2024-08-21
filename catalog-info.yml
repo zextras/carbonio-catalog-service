@@ -34,4 +34,4 @@ spec:
   lifecycle: production
   owner: keyboard-crackers
   definition:
-    $text: https://github.com/Zextras/carbonio-catalog-service/blob/devel/src/main/resources/open-api.yaml
+    $text: https://github.com/Zextras/carbonio-catalog-service/blob/main/src/main/resources/open-api.yaml
