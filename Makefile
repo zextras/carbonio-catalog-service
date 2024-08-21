@@ -1,5 +1,5 @@
 DOMAIN=demo.zextras.io
-NODE:=$(shell echo $${NODE:-mbox})
+NODE:=$(shell echo $${NODE:-svcs})
 VM_HOSTNAME=${HOST}-${NODE}.${DOMAIN}
 
 clean:
