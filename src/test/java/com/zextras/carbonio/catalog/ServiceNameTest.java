@@ -24,7 +24,7 @@ class ServiceNameTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"consul", "test1-sidecar-proxy"})
+  @ValueSource(strings = {"consul", "test1-sidecar-proxy", "test1-db", "carbonio-prometheus-nginx-exporter"})
   void excludeUninterestedServices(String serviceName) {
     final var names = ServiceName.fromAll(Set.of("test1", serviceName, "test2"));
     assertArrayEquals(new String[]{"test1", "test2"}, names);
