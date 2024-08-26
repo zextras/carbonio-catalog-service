@@ -29,7 +29,7 @@ class ServicesResourceTest {
     return new ConsulToken("TEST_CONSUL_TOKEN");
   }
 
-  @InjectConsul // this a custom annotation you are defining in your own application
+  @InjectConsul
   ConsulContainer consul;
 
   @BeforeEach
