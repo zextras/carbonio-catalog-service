@@ -31,12 +31,12 @@ def getRpmSpec(String upstream, String version) {
 }
 
 def generateRpmSpec(String packageName, String version, String upstream) {
-    return '''{
+    return """{
         "pattern": "artifacts/x86_64/(''' + packageName + ''')-(*).el''' + version + '''.x86_64.rpm",
         "target": "''' + upstream + '''/zextras/{1}/{1}-{2}.el''' + version + '''.x86_64.rpm",
-        "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+        "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT};vcs.revision=${env.GIT_COMMIT}"
     }
-    '''
+    """
 }
 
 def buildRpmPackages(String flavor) {
@@ -83,6 +83,9 @@ pipeline {
                 ])
                 withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                   sh "cp ${SETTINGS_PATH} settings.xml"
+                }
+                script {
+                  env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                 }
             }
         }
@@ -219,24 +222,24 @@ pipeline {
                     def buildInfo
                     def uploadSpec
                     buildInfo = Artifactory.newBuildInfo()
-                    uploadSpec ='''{
+                    uploadSpec ="""{
                         "files": [{
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-devel/pool/",
-                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                         },
                         {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-devel/pool/",
-                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                         },
                         {
                             "pattern": "artifacts/*noble*.deb",
                             "target": "ubuntu-devel/pool/",
-                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
-                        },''' + getRpmSpec("centos8-devel", "8") + ''',''' + getRpmSpec("rhel9-devel", "9") + '''
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        },""" + getRpmSpec("centos8-devel", "8") + """,""" + getRpmSpec("rhel9-devel", "9") + """
                         ]
-                    }'''
+                    }"""
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                 }
             }
@@ -261,24 +264,24 @@ pipeline {
                     def buildInfo
                     def uploadSpec
                     buildInfo = Artifactory.newBuildInfo()
-                    uploadSpec ='''{
+                    uploadSpec ="""{
                         "files": [{
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-playground/pool/",
-                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                         },
                         {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-playground/pool/",
-                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                         },
                         {
                             "pattern": "artifacts/*noble*.deb",
                             "target": "ubuntu-playground/pool/",
-                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                         },
-                        ''' + getRpmSpec("centos8-playground", "8") + ''',''' + getRpmSpec("rhel9-playground", "9") + ''']
-                    }'''
+                        """ + getRpmSpec("centos8-playground", "8") + """,""" + getRpmSpec("rhel9-playground", "9") + """]
+                    }"""
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                 }
             }
@@ -306,23 +309,23 @@ pipeline {
                     //ubuntu
                     buildInfo = Artifactory.newBuildInfo()
                     buildInfo.name += '-ubuntu'
-                    uploadSpec = '''{
+                    uploadSpec = """{
                         "files": [{
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-rc/pool/",
-                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                         },
                         {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-rc/pool/",
-                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                         },
                         {
                             "pattern": "artifacts/*noble*.deb",
                             "target": "ubuntu-rc/pool/",
-                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                         }]
-                        }'''
+                        }"""
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                     config = [
                             'buildName': buildInfo.name,
@@ -341,9 +344,9 @@ pipeline {
                     //centos8
                     buildInfo = Artifactory.newBuildInfo()
                     buildInfo.name += '-centos8'
-                    uploadSpec = '''{
-                        "files": [''' + getRpmSpec("centos8-rc", "8") + ''']
-                    }'''
+                    uploadSpec = """{
+                        "files": [""" + getRpmSpec("centos8-rc", "8") + """]
+                    }"""
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                     config = [
                             'buildName': buildInfo.name,
@@ -362,10 +365,10 @@ pipeline {
                     //rhel9
                     buildInfo = Artifactory.newBuildInfo()
                     buildInfo.name += '-rhel9'
-                    uploadSpec = '''{
-                        "files": [''' + getRpmSpec("rhel9-rc", "9") + '''
+                    uploadSpec = """{
+                        "files": [""" + getRpmSpec("rhel9-rc", "9") + """
                         ]
-                    }'''
+                    }"""
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                     config = [
                             'buildName': buildInfo.name,
@@ -384,15 +387,15 @@ pipeline {
                     //rhel9
                     buildInfo = Artifactory.newBuildInfo()
                     buildInfo.name += '-rhel9'
-                    uploadSpec= '''{
+                    uploadSpec= """{
                         "files": [
                             {
                                 "pattern": "artifacts/x86_64/(carbonio-catalog)-(*).x86_64.rpm",
                                 "target": "rhel9-rc/zextras/{1}/{1}-{2}.x86_64.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
                             }
                         ]
-                    }'''
+                    }"""
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                     config = [
                             'buildName'          : buildInfo.name,
