@@ -8,7 +8,9 @@ def buildDebPackages(String flavor) {
         container('yap') {
             if (BRANCH_NAME == 'devel') {
                 def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "yap build " + flavor + " . -r ${timestamp}"
             } else {
+                sh 'yap build ' + flavor + ' .'
             }
         }
     }
@@ -131,7 +133,7 @@ pipeline {
             stages {
                 stage('yap') {
                     parallel {
-                        stage('Ubuntu') {
+                        stage('Ubuntu 20') {
                             agent {
                                 node {
                                     label 'yap-ubuntu-20-v1'
@@ -146,7 +148,7 @@ pipeline {
                                 }
                             }
                         }
-                        stage('Ubuntu 22.04') {
+                        stage('Ubuntu 22') {
                             agent {
                                 node {
                                     label 'yap-ubuntu-22-v1'
@@ -161,7 +163,7 @@ pipeline {
                                 }
                             }
                         }
-                        stage('Ubuntu 24.04') {
+                        stage('Ubuntu 24') {
                             agent {
                                 node {
                                     label 'yap-ubuntu-24-v1'
@@ -176,7 +178,7 @@ pipeline {
                                 }
                             }
                         }
-                        stage('RHEL') {
+                        stage('RHEL 8') {
                             agent {
                                 node {
                                     label 'yap-rocky-8-v1'
@@ -191,7 +193,7 @@ pipeline {
                                 }
                             }
                         }
-                        stage('Rocky 9') {
+                        stage('RHEL 9') {
                             agent {
                                 node {
                                     label 'yap-rocky-9-v1'
