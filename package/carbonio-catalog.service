@@ -3,6 +3,7 @@ Description=Carbonio Catalog daemon
 Wants=network.target
 Requires=network-online.target
 After=network-online.target
+PartOf=carbonio-mta.target
 
 [Service]
 Type=simple
@@ -15,4 +16,4 @@ TimeoutSec=60
 TimeoutStopSec=120
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=carbonio-mta.target
