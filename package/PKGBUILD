@@ -44,7 +44,7 @@ sha256sums=(
 )
 
 package() {
-  cd "${srcdir}"/../../staging/target/
+  cd "${srcdir}"/../../target/
 
   install -Ddm 755 quarkus-app \
     "${pkgdir}/usr/share/carbonio/carbonio-catalog"
