@@ -4,13 +4,12 @@ def mvnCmd(String cmd) {
 
 def buildDebPackages(String flavor) {
     unstash 'staging'
-    sh 'cp -r . /tmp/staging'
     script {
-        if (BRANCH_NAME == 'devel') {
-            def timestamp = new Date().format('yyyyMMddHHmmss')
-            sh "sudo yap build " + flavor + " /tmp/staging -r ${timestamp}"
-        } else {
-            sh 'sudo yap build ' + flavor + ' /tmp/staging'
+        container('yap') {
+            if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+            } else {
+            }
         }
     }
     stash includes: 'artifacts/*.deb', name: 'artifacts-' + flavor
@@ -41,13 +40,14 @@ def generateRpmSpec(String packageName, String version, String upstream) {
 
 def buildRpmPackages(String flavor) {
     unstash 'staging'
-    sh 'cp -r . /tmp/staging'
     script {
-        if (BRANCH_NAME == 'devel') {
-            def timestamp = new Date().format('yyyyMMddHHmmss')
-            sh "sudo yap build " + flavor + " /tmp/staging -r ${timestamp}"
-        } else {
-            sh 'sudo yap build ' + flavor + ' /tmp/staging'
+        container('yap') {
+            if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "yap build " + flavor + " . -r ${timestamp}"
+            } else {
+                sh 'yap build ' + flavor + ' .'
+            }
         }
     }
     stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-' + flavor
