@@ -56,7 +56,7 @@ def buildRpmPackages(String flavor) {
 pipeline {
     agent {
         node {
-            label 'zextras-agent-v4'
+            label 'zextras-v1'
         }
     }
     environment {
@@ -91,8 +91,10 @@ pipeline {
         }
         stage('Build') {
             steps {
-                mvnCmd("-DskipTests clean package")
-                stash includes: 'yap.json,package/**,target/quarkus-app/**', name: 'staging'
+                container('jdk-17') {
+                    mvnCmd("-DskipTests clean package")
+                    stash includes: 'yap.json,package/**,target/quarkus-app/**', name: 'staging'
+                }
             }
         }
         stage('Test') {
@@ -101,7 +103,9 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("verify sonar:sonar")
+                    container('jdk-17') {
+                        mvnCmd("verify sonar:sonar")
+                    }
                 }
             }
             post {
@@ -118,7 +122,9 @@ pipeline {
                 }
             }
             steps {
-                mvnCmd("-DskipTests deploy")
+                container('jdk-17') {
+                    mvnCmd("-DskipTests deploy")
+                }
             }
         }
         stage('Build deb/rpm') {
@@ -128,7 +134,7 @@ pipeline {
                         stage('Ubuntu') {
                             agent {
                                 node {
-                                    label 'yap-agent-ubuntu-20.04-v2'
+                                    label 'yap-ubuntu-20-v1'
                                 }
                             }
                             steps {
@@ -143,7 +149,7 @@ pipeline {
                         stage('Ubuntu 22.04') {
                             agent {
                                 node {
-                                    label 'yap-agent-ubuntu-22.04-v2'
+                                    label 'yap-ubuntu-22-v1'
                                 }
                             }
                             steps {
@@ -158,7 +164,7 @@ pipeline {
                         stage('Ubuntu 24.04') {
                             agent {
                                 node {
-                                    label 'yap-agent-ubuntu-24.04-v2'
+                                    label 'yap-ubuntu-24-v1'
                                 }
                             }
                             steps {
@@ -173,7 +179,7 @@ pipeline {
                         stage('RHEL') {
                             agent {
                                 node {
-                                    label 'yap-agent-rocky-8-v2'
+                                    label 'yap-rocky-8-v1'
                                 }
                             }
                             steps {
@@ -188,7 +194,7 @@ pipeline {
                         stage('Rocky 9') {
                             agent {
                                 node {
-                                    label 'yap-agent-rocky-9-v2'
+                                    label 'yap-rocky-9-v1'
                                 }
                             }
                             steps {
