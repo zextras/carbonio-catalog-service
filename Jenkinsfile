@@ -133,21 +133,6 @@ pipeline {
             stages {
                 stage('yap') {
                     parallel {
-                        stage('Ubuntu 20') {
-                            agent {
-                                node {
-                                    label 'yap-ubuntu-20-v1'
-                                }
-                            }
-                            steps {
-                                buildDebPackages("ubuntu-focal")
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: 'artifacts/*focal*.deb', fingerprint: true
-                                }
-                            }
-                        }
                         stage('Ubuntu 22') {
                             agent {
                                 node {
@@ -219,7 +204,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
@@ -231,11 +215,7 @@ pipeline {
                     def uploadSpec
                     buildInfo = Artifactory.newBuildInfo()
                     uploadSpec ="""{
-                        "files": [{
-                            "pattern": "artifacts/*focal*.deb",
-                            "target": "ubuntu-devel/pool/",
-                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                        },
+                        "files": [
                         {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-devel/pool/",
@@ -261,7 +241,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
@@ -273,11 +252,7 @@ pipeline {
                     def uploadSpec
                     buildInfo = Artifactory.newBuildInfo()
                     uploadSpec ="""{
-                        "files": [{
-                            "pattern": "artifacts/*focal*.deb",
-                            "target": "ubuntu-playground/pool/",
-                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                        },
+                        "files": [
                         {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-playground/pool/",
@@ -302,7 +277,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
@@ -318,11 +292,7 @@ pipeline {
                     buildInfo = Artifactory.newBuildInfo()
                     buildInfo.name += '-ubuntu'
                     uploadSpec = """{
-                        "files": [{
-                            "pattern": "artifacts/*focal*.deb",
-                            "target": "ubuntu-rc/pool/",
-                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                        },
+                        "files": [
                         {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-rc/pool/",
