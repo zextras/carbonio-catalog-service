@@ -42,7 +42,7 @@ sha256sums=('599d10048be4ae408c498bba33b157015006d61916d4a051cfdbf31933f130cc'
   '2dc8ee0387d2106599ef60996f11e87ea5811d9c4bb62f9bc722944f7d8829a8')
 
 package() {
-  cd "${srcdir}"/../../target/
+  cd "${srcdir}"/../target/
 
   install -Ddm 755 quarkus-app \
     "${pkgdir}/usr/share/carbonio/carbonio-catalog"
