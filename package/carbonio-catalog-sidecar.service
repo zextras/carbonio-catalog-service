@@ -3,6 +3,7 @@ Description=Carbonio Catalog sidecar proxy
 Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
 Requires=network-online.target
 After=network-online.target
+PartOf=carbonio-mta.target
 
 [Service]
 Type=simple
@@ -20,4 +21,4 @@ TimeoutSec=120
 TimeoutStopSec=120
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=carbonio-mta.target
