@@ -3,18 +3,16 @@ def mvnCmd(String cmd) {
 }
 
 def buildDebPackages(String flavor) {
-    unstash 'staging'
-    script {
-        container('yap') {
-            if (BRANCH_NAME == 'devel') {
-                def timestamp = new Date().format('yyyyMMddHHmmss')
-                sh "yap build " + flavor + " . -r ${timestamp}"
-            } else {
-                sh 'yap build ' + flavor + ' .'
-            }
+    container('yap') {
+        unstash 'staging'
+        if (BRANCH_NAME == 'devel') {
+            def timestamp = new Date().format('yyyyMMddHHmmss')
+            sh "yap build " + flavor + " . -r ${timestamp}"
+        } else {
+            sh 'yap build ' + flavor + ' .'
         }
+        stash includes: 'artifacts/*.deb', name: 'artifacts-' + flavor
     }
-    stash includes: 'artifacts/*.deb', name: 'artifacts-' + flavor
 }
 
 def getPackages() {
@@ -41,18 +39,16 @@ def generateRpmSpec(String packageName, String version, String upstream) {
 }
 
 def buildRpmPackages(String flavor) {
-    unstash 'staging'
-    script {
-        container('yap') {
-            if (BRANCH_NAME == 'devel') {
-                def timestamp = new Date().format('yyyyMMddHHmmss')
-                sh "yap build " + flavor + " . -r ${timestamp}"
-            } else {
-                sh 'yap build ' + flavor + ' .'
-            }
+    container('yap') {
+        unstash 'staging'
+        if (BRANCH_NAME == 'devel') {
+            def timestamp = new Date().format('yyyyMMddHHmmss')
+            sh "yap build " + flavor + " . -r ${timestamp}"
+        } else {
+            sh 'yap build ' + flavor + ' .'
         }
+        stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-' + flavor
     }
-    stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-' + flavor
 }
 
 pipeline {
@@ -77,12 +73,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([
-                  $class: 'GitSCM',
-                  branches: scm.branches,
-                  extensions: [[ $class: 'CloneOption', shallow: true, depth: 1 ]],
-                  userRemoteConfigs: scm.userRemoteConfigs
-                ])
+                checkout scm
                 withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                   sh 'cp ${SETTINGS_PATH} settings.xml'
                 }
@@ -174,7 +165,7 @@ pipeline {
                             }
                             post {
                                 always {
-                                    archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                                    archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
                                 }
                             }
                         }
@@ -189,7 +180,7 @@ pipeline {
                             }
                             post {
                                 always {
-                                    archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                                    archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
                                 }
                             }
                         }
@@ -358,33 +349,6 @@ pipeline {
                             'includeDependencies': false,
                             'copy': true,
                             'failFast': true
-                    ]
-                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'RHEL9 Promotion to Release'
-                    server.publishBuildInfo buildInfo
-
-                    //rhel9
-                    buildInfo = Artifactory.newBuildInfo()
-                    buildInfo.name += '-rhel9'
-                    uploadSpec= """{
-                        "files": [
-                            {
-                                "pattern": "artifacts/x86_64/(carbonio-catalog)-(*).x86_64.rpm",
-                                "target": "rhel9-rc/zextras/{1}/{1}-{2}.x86_64.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
-                            }
-                        ]
-                    }"""
-                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-                    config = [
-                            'buildName'          : buildInfo.name,
-                            'buildNumber'        : buildInfo.number,
-                            'sourceRepo'         : 'rhel9-rc',
-                            'targetRepo'         : 'rhel9-release',
-                            'comment'            : 'Do not change anything! Just press the button',
-                            'status'             : 'Released',
-                            'includeDependencies': false,
-                            'copy'               : true,
-                            'failFast'           : true
                     ]
                     Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'RHEL9 Promotion to Release'
                     server.publishBuildInfo buildInfo
