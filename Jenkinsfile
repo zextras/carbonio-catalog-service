@@ -3,17 +3,17 @@ def mvnCmd(String cmd) {
 }
 
 def buildDebPackages(String flavor) {
-    unstash 'staging'
-    sh 'cp -r . /tmp/staging'
-    script {
+    container('yap') {
+        unstash 'staging'
+        sh 'cp -r . /tmp/staging'
         if (BRANCH_NAME == 'devel') {
             def timestamp = new Date().format('yyyyMMddHHmmss')
-            sh "sudo yap build " + flavor + " /tmp/staging -r ${timestamp}"
+            sh "yap build " + flavor + " /tmp/staging -r ${timestamp}"
         } else {
-            sh 'sudo yap build ' + flavor + ' /tmp/staging'
+            sh 'yap build ' + flavor + ' /tmp/staging'
         }
+        stash includes: 'artifacts/*.deb', name: 'artifacts-' + flavor
     }
-    stash includes: 'artifacts/*.deb', name: 'artifacts-' + flavor
 }
 
 def getPackages() {
@@ -32,7 +32,7 @@ def getRpmSpec(String upstream, String version) {
 
 def generateRpmSpec(String packageName, String version, String upstream) {
     return """{
-        "pattern": "artifacts/x86_64/(${packageName})-(*).el${version}.x86_64.rpm",
+        "pattern": "artifacts/(${packageName})-(*).el${version}.x86_64.rpm",
         "target": "${upstream}/zextras/{1}/{1}-{2}.el${version}.x86_64.rpm",
         "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
     }
@@ -40,23 +40,23 @@ def generateRpmSpec(String packageName, String version, String upstream) {
 }
 
 def buildRpmPackages(String flavor) {
-    unstash 'staging'
-    sh 'cp -r . /tmp/staging'
-    script {
+    container('yap') {
+        unstash 'staging'
+        sh 'cp -r . /tmp/staging'
         if (BRANCH_NAME == 'devel') {
             def timestamp = new Date().format('yyyyMMddHHmmss')
-            sh "sudo yap build " + flavor + " /tmp/staging -r ${timestamp}"
+            sh "yap build " + flavor + " . -r ${timestamp}"
         } else {
-            sh 'sudo yap build ' + flavor + ' /tmp/staging'
+            sh 'yap build ' + flavor + ' .'
         }
+        stash includes: 'artifacts/*.rpm', name: 'artifacts-' + flavor
     }
-    stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-' + flavor
 }
 
 pipeline {
     agent {
         node {
-            label 'zextras-agent-v4'
+            label 'zextras-v1'
         }
     }
     environment {
@@ -75,14 +75,9 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([
-                  $class: 'GitSCM',
-                  branches: scm.branches,
-                  extensions: [[ $class: 'CloneOption', shallow: true, depth: 1 ]],
-                  userRemoteConfigs: scm.userRemoteConfigs
-                ])
+                checkout scm
                 withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                  sh "cp ${SETTINGS_PATH} settings.xml"
+                  sh 'cp ${SETTINGS_PATH} settings.xml'
                 }
                 script {
                   env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
@@ -91,8 +86,10 @@ pipeline {
         }
         stage('Build') {
             steps {
-                mvnCmd("-DskipTests clean package")
-                stash includes: 'yap.json,package/**,target/quarkus-app/**', name: 'staging'
+                container('jdk-17') {
+                    mvnCmd("-DskipTests clean package")
+                    stash includes: 'yap.json,package/**,target/quarkus-app/**', name: 'staging'
+                }
             }
         }
         stage('Test') {
@@ -101,7 +98,9 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("verify sonar:sonar")
+                    container('jdk-17') {
+                        mvnCmd("verify sonar:sonar")
+                    }
                 }
             }
             post {
@@ -118,32 +117,19 @@ pipeline {
                 }
             }
             steps {
-                mvnCmd("-DskipTests deploy")
+                container('jdk-17') {
+                    mvnCmd("-DskipTests deploy")
+                }
             }
         }
         stage('Build deb/rpm') {
             stages {
                 stage('yap') {
                     parallel {
-                        stage('Ubuntu') {
+                        stage('Ubuntu 22') {
                             agent {
                                 node {
-                                    label 'yap-agent-ubuntu-20.04-v2'
-                                }
-                            }
-                            steps {
-                                buildDebPackages("ubuntu-focal")
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: 'artifacts/*focal*.deb', fingerprint: true
-                                }
-                            }
-                        }
-                        stage('Ubuntu 22.04') {
-                            agent {
-                                node {
-                                    label 'yap-agent-ubuntu-22.04-v2'
+                                    label 'yap-ubuntu-22-v1'
                                 }
                             }
                             steps {
@@ -155,10 +141,10 @@ pipeline {
                                 }
                             }
                         }
-                        stage('Ubuntu 24.04') {
+                        stage('Ubuntu 24') {
                             agent {
                                 node {
-                                    label 'yap-agent-ubuntu-24.04-v2'
+                                    label 'yap-ubuntu-24-v1'
                                 }
                             }
                             steps {
@@ -170,10 +156,10 @@ pipeline {
                                 }
                             }
                         }
-                        stage('RHEL') {
+                        stage('RHEL 8') {
                             agent {
                                 node {
-                                    label 'yap-agent-rocky-8-v2'
+                                    label 'yap-rocky-8-v1'
                                 }
                             }
                             steps {
@@ -181,14 +167,14 @@ pipeline {
                             }
                             post {
                                 always {
-                                    archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                                    archiveArtifacts artifacts: 'artifacts/*el8*.rpm', fingerprint: true
                                 }
                             }
                         }
-                        stage('Rocky 9') {
+                        stage('RHEL 9') {
                             agent {
                                 node {
-                                    label 'yap-agent-rocky-9-v2'
+                                    label 'yap-rocky-9-v1'
                                 }
                             }
                             steps {
@@ -196,7 +182,7 @@ pipeline {
                             }
                             post {
                                 always {
-                                    archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                                    archiveArtifacts artifacts: 'artifacts/*el9*.rpm', fingerprint: true
                                 }
                             }
                         }
@@ -211,7 +197,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
@@ -223,11 +208,7 @@ pipeline {
                     def uploadSpec
                     buildInfo = Artifactory.newBuildInfo()
                     uploadSpec ="""{
-                        "files": [{
-                            "pattern": "artifacts/*focal*.deb",
-                            "target": "ubuntu-devel/pool/",
-                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                        },
+                        "files": [
                         {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-devel/pool/",
@@ -253,7 +234,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
@@ -265,11 +245,7 @@ pipeline {
                     def uploadSpec
                     buildInfo = Artifactory.newBuildInfo()
                     uploadSpec ="""{
-                        "files": [{
-                            "pattern": "artifacts/*focal*.deb",
-                            "target": "ubuntu-playground/pool/",
-                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                        },
+                        "files": [
                         {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-playground/pool/",
@@ -294,7 +270,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
@@ -310,11 +285,7 @@ pipeline {
                     buildInfo = Artifactory.newBuildInfo()
                     buildInfo.name += '-ubuntu'
                     uploadSpec = """{
-                        "files": [{
-                            "pattern": "artifacts/*focal*.deb",
-                            "target": "ubuntu-rc/pool/",
-                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                        },
+                        "files": [
                         {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-rc/pool/",
@@ -380,33 +351,6 @@ pipeline {
                             'includeDependencies': false,
                             'copy': true,
                             'failFast': true
-                    ]
-                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'RHEL9 Promotion to Release'
-                    server.publishBuildInfo buildInfo
-
-                    //rhel9
-                    buildInfo = Artifactory.newBuildInfo()
-                    buildInfo.name += '-rhel9'
-                    uploadSpec= """{
-                        "files": [
-                            {
-                                "pattern": "artifacts/x86_64/(carbonio-catalog)-(*).x86_64.rpm",
-                                "target": "rhel9-rc/zextras/{1}/{1}-{2}.x86_64.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
-                            }
-                        ]
-                    }"""
-                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-                    config = [
-                            'buildName'          : buildInfo.name,
-                            'buildNumber'        : buildInfo.number,
-                            'sourceRepo'         : 'rhel9-rc',
-                            'targetRepo'         : 'rhel9-release',
-                            'comment'            : 'Do not change anything! Just press the button',
-                            'status'             : 'Released',
-                            'includeDependencies': false,
-                            'copy'               : true,
-                            'failFast'           : true
                     ]
                     Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'RHEL9 Promotion to Release'
                     server.publishBuildInfo buildInfo
