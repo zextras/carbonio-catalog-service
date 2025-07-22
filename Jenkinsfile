@@ -5,6 +5,7 @@ def mvnCmd(String cmd) {
 def buildDebPackages(String flavor) {
     container('yap') {
         unstash 'staging'
+        sh 'cp -r . /tmp/staging'
         if (BRANCH_NAME == 'devel') {
             def timestamp = new Date().format('yyyyMMddHHmmss')
             sh "yap build " + flavor + " . -r ${timestamp}"
@@ -41,13 +42,14 @@ def generateRpmSpec(String packageName, String version, String upstream) {
 def buildRpmPackages(String flavor) {
     container('yap') {
         unstash 'staging'
+        sh 'cp -r . /tmp/staging'
         if (BRANCH_NAME == 'devel') {
             def timestamp = new Date().format('yyyyMMddHHmmss')
             sh "yap build " + flavor + " . -r ${timestamp}"
         } else {
             sh 'yap build ' + flavor + ' .'
         }
-        stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-' + flavor
+        stash includes: 'artifacts/*.rpm', name: 'artifacts-' + flavor
     }
 }
 
@@ -165,7 +167,7 @@ pipeline {
                             }
                             post {
                                 always {
-                                    archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
+                                    archiveArtifacts artifacts: 'artifacts/*el8*.rpm', fingerprint: true
                                 }
                             }
                         }
@@ -180,7 +182,7 @@ pipeline {
                             }
                             post {
                                 always {
-                                    archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
+                                    archiveArtifacts artifacts: 'artifacts/*el9*.rpm', fingerprint: true
                                 }
                             }
                         }
