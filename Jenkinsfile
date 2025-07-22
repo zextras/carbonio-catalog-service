@@ -8,9 +8,9 @@ def buildDebPackages(String flavor) {
         sh 'cp -r . /tmp/staging'
         if (BRANCH_NAME == 'devel') {
             def timestamp = new Date().format('yyyyMMddHHmmss')
-            sh "yap build " + flavor + " . -r ${timestamp}"
+            sh "yap build " + flavor + " /tmp/staging -r ${timestamp}"
         } else {
-            sh 'yap build ' + flavor + ' .'
+            sh 'yap build ' + flavor + ' /tmp/staging'
         }
         stash includes: 'artifacts/*.deb', name: 'artifacts-' + flavor
     }
