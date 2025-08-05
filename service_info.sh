@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 : <<'END_COMMENT'
   Script that enables to retrieve information about a service from Consul (how many instances, health state, their addresses, etc.)
   Useful when we are in a multi-host environment
