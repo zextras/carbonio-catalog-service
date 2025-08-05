@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
 def mvnCmd(String cmd) {
   sh 'mvn --settings settings.xml -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn ' + cmd
 }

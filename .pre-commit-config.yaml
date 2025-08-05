@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 # more info: https://zextras.atlassian.net/wiki/spaces/FT/pages/2925592579/Pre-commit+rulesets
 exclude: "mvnw|package-lock.json|go.sum"
 repos:
