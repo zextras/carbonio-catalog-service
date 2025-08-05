@@ -110,3 +110,10 @@ export HOST=kc-dev1
 export SERVICE_ID=my-service
 make info
 ```
+
+## Copyright and Licensing notices
+All non-software material (such as, for example, names, images, logos,
+sounds) is owned by Zextras s.r.l. and is licensed under CC-BY-NC-SA
+https://creativecommons.org/licenses/by-nc-sa/4.0/.
+Where not specified, all source files owned by Zextras s.r.l. are licensed
+under AGPL-3.0-only

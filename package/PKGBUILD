@@ -9,6 +9,7 @@ maintainer="Zextras <packages@zextras.com>"
 copyright=(
   "2023-2024, Zextras <https://www.zextras.com>"
 )
+license=("AGPL-3.0-only")
 arch=('x86_64')
 section="admin"
 priority="optional"
