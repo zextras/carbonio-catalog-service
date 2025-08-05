@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 /**
  * Health check logic follows the technical_specifications/health-check.md guideline provide by organization dev guide.
  */
