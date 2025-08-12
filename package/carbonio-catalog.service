@@ -16,4 +16,4 @@ TimeoutSec=60
 TimeoutStopSec=120
 
 [Install]
-WantedBy=carbonio-mta.target
+WantedBy=multi-user.target
