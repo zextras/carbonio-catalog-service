@@ -3,7 +3,7 @@ Description=Carbonio Catalog sidecar proxy
 Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
 Requires=network-online.target
 After=network-online.target
-PartOf=carbonio-mta.target
+PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
 
 [Service]
 User=carbonio-catalog
