@@ -3,7 +3,7 @@ Description=Carbonio Catalog daemon
 Wants=network.target
 Requires=network-online.target
 After=network-online.target
-PartOf=carbonio-mta.target
+PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
 
 [Service]
 Type=simple
