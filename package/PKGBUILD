@@ -14,9 +14,6 @@ arch=('x86_64')
 section="admin"
 priority="optional"
 url="https://www.zextras.com/"
-makedepends=(
-  "rsync"
-)
 depends=(
   "carbonio-openjdk"
   "pending-setups"
@@ -31,6 +28,7 @@ source=(
   "${pkgname}-service-protocol.json"
   "${pkgname}-setup"
   "${pkgname}-sidecar.service"
+  "${pkgname}-quarkus.tar.gz"
 )
 
 sha256sums=(
@@ -43,43 +41,40 @@ sha256sums=(
   '2f2aedfa59a8f032fe5dfbc6650f6e5086c313a096e99e5003539deaf5a663cd'
   '934e8c0c61be5c0cad1815581f1b4b74deb463c1cea8b513f0f2308a9586b7a2'
   '5e169321936ef960e0160b20b5ae100d2b21af4237e6cf1faf41c17e500512c3'
+  'SKIP'
 )
 
 package() {
-  cd "${srcdir}"/../../staging/target/
-
-  install -Ddm 755 quarkus-app \
+  install -Ddm755 \
     "${pkgdir}/usr/share/carbonio/carbonio-catalog"
-  rsync -a quarkus-app/* \
+  cp -a "${srcdir}/quarkus-app" \
     "${pkgdir}/usr/share/carbonio/carbonio-catalog/"
 
-  cd "${srcdir}"
-
-  install -Dm755 "carbonio-catalog" \
+  install -Dm755 "${srcdir}/carbonio-catalog" \
     "${pkgdir}/usr/bin/carbonio-catalog"
 
-  install -Dm 755 carbonio-catalog-setup \
+  install -Dm755 "${srcdir}/carbonio-catalog-setup" \
     "${pkgdir}/usr/bin/carbonio-catalog-setup"
 
-  install -Dm644 "carbonio-catalog.service" \
+  install -Dm644 "${srcdir}/carbonio-catalog.service" \
     "${pkgdir}/lib/systemd/system/carbonio-catalog.service"
 
-  install -Dm 644 carbonio-catalog-sidecar.service \
+  install -Dm644 "${srcdir}/carbonio-catalog-sidecar.service" \
     "${pkgdir}/lib/systemd/system/carbonio-catalog-sidecar.service"
 
-  install -Dm 644 carbonio-catalog.hcl \
+  install -Dm644 "${srcdir}/carbonio-catalog.hcl" \
     "${pkgdir}/etc/zextras/service-discover/carbonio-catalog.hcl"
 
-  install -Dm 644 carbonio-catalog-pending-setup.sh \
+  install -Dm644 "${srcdir}/carbonio-catalog-pending-setup.sh" \
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-catalog.sh"
 
-  install -Dm 644 carbonio-catalog-intentions.json \
+  install -Dm644 "${srcdir}/carbonio-catalog-intentions.json" \
     "${pkgdir}/etc/carbonio/catalog/service-discover/intentions.json"
 
-  install -Dm 644 carbonio-catalog-policies.json \
+  install -Dm644 "${srcdir}/carbonio-catalog-policies.json" \
     "${pkgdir}/etc/carbonio/catalog/service-discover/policies.json"
 
-  install -Dm 644 carbonio-catalog-service-protocol.json \
+  install -Dm644 "${srcdir}/carbonio-catalog-service-protocol.json" \
     "${pkgdir}/etc/carbonio/catalog/service-discover/service-protocol.json"
 }
 
