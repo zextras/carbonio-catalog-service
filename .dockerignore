@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile*
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# Scripts (not needed in container)
+*.sh
+Makefile
+
+# Package files
+package/
+artifacts/
+
+# Test files
+src/test/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Jenkins
+Jenkinsfile
+
+# Other
+yap.json*
+COPYING

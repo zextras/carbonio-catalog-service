@@ -60,6 +60,21 @@ pipeline {
             }
         }
 
+        stage('Publish containers') {
+            steps {
+                container('dind') {
+                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                        sh 'docker build ' +
+                                '--label org.opencontainers.image.title="Carbonio Catalog Service" ' +
+                                '--label org.opencontainers.image.description="Carbonio Catalog Service for service discovery" ' +
+                                '--label org.opencontainers.image.vendor="Zextras" ' +
+                                '-f Dockerfile -t registry.dev.zextras.com/dev/carbonio-catalog-service:latest .'
+                        sh 'docker push registry.dev.zextras.com/dev/carbonio-catalog-service:latest'
+                    }
+                }
+            }
+        }
+
         stage('Tests') {
             when {
                 expression { params.SKIP_TESTS == false }
