@@ -19,10 +19,10 @@ depends=(
   "pending-setups"
 )
 source=(
+  "421-${pkgname}.sh"
   "${pkgname}"
   "${pkgname}.hcl"
   "${pkgname}-intentions.json"
-  "${pkgname}-pending-setup.sh"
   "${pkgname}-policies.json"
   "${pkgname}.service"
   "${pkgname}-service-protocol.json"
@@ -32,10 +32,10 @@ source=(
 )
 
 sha256sums=(
+  '70ca4a16079af600db5849c0bcb768c0ea96e05d772ee483df0beef44a700113'
   '599d10048be4ae408c498bba33b157015006d61916d4a051cfdbf31933f130cc'
   '5b14e0d88272e89f79a21e432a4dbb3b3032e31528507e4c3aacfc056f82dc1d'
   '5fed7682316886fcd053b545c42a25ff2fc9d5da949e3da97134e70e8ab25450'
-  '70ca4a16079af600db5849c0bcb768c0ea96e05d772ee483df0beef44a700113'
   '376c53798291548ef9968a60b4dbef6fdd9c255a6dac11adc6b1cfcc42c2b727'
   '274feb3a6d051cc4cebf0ee81b188fa72ab0a691abbe4a405121ae3bae0021a4'
   '2f2aedfa59a8f032fe5dfbc6650f6e5086c313a096e99e5003539deaf5a663cd'
@@ -65,8 +65,8 @@ package() {
   install -Dm644 "${srcdir}/carbonio-catalog.hcl" \
     "${pkgdir}/etc/zextras/service-discover/carbonio-catalog.hcl"
 
-  install -Dm644 "${srcdir}/carbonio-catalog-pending-setup.sh" \
-    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-catalog.sh"
+  install -Dm644 "${srcdir}/421-carbonio-catalog.sh" \
+    "${pkgdir}/etc/zextras/pending-setups.d/421-carbonio-catalog.sh"
 
   install -Dm644 "${srcdir}/carbonio-catalog-intentions.json" \
     "${pkgdir}/etc/carbonio/catalog/service-discover/intentions.json"
