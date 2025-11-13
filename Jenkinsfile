@@ -11,6 +11,10 @@ library(
     ])
 )
 
+boolean isBuildingTag() {
+    return env.TAG_NAME ? true : false
+}
+
 pipeline {
     agent {
         node {
