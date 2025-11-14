@@ -11,6 +11,10 @@ library(
     ])
 )
 
+boolean isBuildingTag() {
+    return env.TAG_NAME ? true : false
+}
+
 pipeline {
     agent {
         node {
@@ -87,6 +91,36 @@ pipeline {
                 container('jdk-17') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         sh "mvn ${MVN_OPTS} sonar:sonar"
+                    }
+                }
+            }
+        }
+        stage('Publish containers') {
+            when {
+                expression {
+                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
+                }
+            }
+            steps {
+                container('dind') {
+                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                        script {
+                            Set<String> tagVersions = []
+                            if (isBuildingTag()) {
+                                tagVersions = [env.TAG_NAME, 'stable']
+                            } else {
+                                tagVersions = ['devel', 'latest']
+                            }
+                            dockerHelper.buildImage([
+                                    dockerfile: 'Dockerfile',
+                                    imageName : 'registry.dev.zextras.com/dev/carbonio-catalog',
+                                    imageTags : tagVersions,
+                                    ocLabels  : [
+                                            title          : 'Carbonio Catalog',
+                                            version        : tagVersions[0]
+                                    ]
+                            ])
+                        }
                     }
                 }
             }
