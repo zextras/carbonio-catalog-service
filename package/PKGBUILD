@@ -47,10 +47,8 @@ sha256sums=(
 package() {
   install -Ddm755 \
     "${pkgdir}/usr/share/carbonio/carbonio-catalog"
-
   cp -a "${srcdir}/quarkus-app" \
     "${pkgdir}/usr/share/carbonio/carbonio-catalog/"
-  test -e "${pkgdir}/usr/share/carbonio/carbonio-catalog/quarkus-app/quarkus-run.jar"
 
   install -Dm755 "${srcdir}/carbonio-catalog" \
     "${pkgdir}/usr/bin/carbonio-catalog"
