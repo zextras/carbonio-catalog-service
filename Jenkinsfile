@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-    identifier: 'jenkins-packages-build-library@1.0.4',
+    identifier: 'jenkins-lib-common@1.1.2',
     retriever: modernSCM([
         $class: 'GitSCMSource',
-        remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
+        remote: 'git@github.com:zextras/jenkins-lib-common.git',
         credentialsId: 'jenkins-integration-with-github-account'
     ])
 )
@@ -33,22 +33,13 @@ pipeline {
         timeout(time: 15, unit: 'MINUTES')
     }
 
-    parameters {
-        booleanParam defaultValue: false,
-            description: 'Whether to upload the packages in playground repositories',
-            name: 'PLAYGROUND'
-    }
-
-    tools {
-        jfrog 'jfrog-cli'
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Setup') {
             steps {
                 checkout scm
                 script {
                     gitMetadata()
+                    properties(defaultPipelineProperties())
                 }
             }
         }
@@ -136,7 +127,7 @@ pipeline {
             steps {
                 container('jdk-17') {
                     withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        sh "mvn ${MVN_OPTS} -s " +  SETTINGS_PATH + '-DskipTests deploy'
+                        sh "mvn ${MVN_OPTS} -s " +  SETTINGS_PATH + ' -DskipTests deploy'
                     }
                 }
             }
@@ -151,9 +142,15 @@ pipeline {
 
         stage('Upload artifacts')
         {
+            when {
+                expression { return uploadStage.shouldUpload() }
+            }
+            tools {
+                jfrog 'jfrog-cli'
+            }
             steps {
                 uploadStage(
-                    packages: yapHelper.getPackageNames()
+                    packages: yapHelper.resolvePackageNames()
                 )
             }
         }
