@@ -11,6 +11,8 @@ library(
     ])
 )
 
+properties(defaultPipelineProperties())
+
 boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
 }
@@ -39,7 +41,6 @@ pipeline {
                 checkout scm
                 script {
                     gitMetadata()
-                    properties(defaultPipelineProperties())
                 }
             }
         }
