@@ -47,7 +47,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     sh """
                         mvn ${MVN_OPTS} -DskipTests clean package
                         tar czf package/carbonio-catalog-quarkus.tar.gz -C target/ quarkus-app
@@ -61,7 +61,7 @@ pipeline {
                 expression { params.SKIP_TESTS == false }
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     sh "mvn ${MVN_OPTS} -Dmaven.test.redirectTestOutputToFile=true verify"
                 }
             }
@@ -80,7 +80,7 @@ pipeline {
                 SCANNER_HOME = tool 'SonarScanner'
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         sh "mvn ${MVN_OPTS} sonar:sonar"
                     }
@@ -126,7 +126,7 @@ pipeline {
                 }
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                         sh "mvn ${MVN_OPTS} -s " +  SETTINGS_PATH + ' -DskipTests deploy'
                     }
