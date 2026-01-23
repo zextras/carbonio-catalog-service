@@ -6,12 +6,13 @@ After=network-online.target
 PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
 
 [Service]
+Slice=carbonio.slice
 Type=simple
 ExecStart=/usr/bin/carbonio-catalog
 User=carbonio-catalog
 Group=carbonio-catalog
 Restart=on-failure
-RestartSec=15
+RestartSec=15s
 TimeoutSec=60
 TimeoutStopSec=120
 
