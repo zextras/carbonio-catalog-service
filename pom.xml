@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.zextras.carbonio.catalog</groupId>
   <artifactId>carbonio-catalog-service</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.5</version>
   <name>carbonio catalog service</name>
 
   <properties>
