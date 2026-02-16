@@ -1,19 +1,22 @@
 [Unit]
-Description=Carbonio Catalog sidecar proxy
-Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
+Description=Carbonio Catalog Sidecar
+Documentation=https://docs.zextras.com/
 Requires=network-online.target
-After=network-online.target
+After=carbonio-catalog.service network-online.target
+BindsTo=carbonio-catalog.service
+# Catalog is a cross-cutting service used by all targets
 PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
 
 [Service]
+Slice=carbonio.slice
 User=carbonio-catalog
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/catalog/service-discover/token \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-catalog
-ExecReload=/usr/bin/kill -HUP $MAINPID
 Restart=on-failure
-RestartSec=15
+RestartSec=15s
+ExecReload=/usr/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
 LimitNOFILE=65536
 
