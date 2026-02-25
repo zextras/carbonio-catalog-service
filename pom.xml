@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
   <name>carbonio catalog service</name>
 
   <properties>
-    <revision>0.0.4</revision>
+    <revision>0.0.5</revision>
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
