@@ -35,3 +35,5 @@ consul_token
 
 # Application log files
 *.log
+
+carbonio-catalog-quarkus.tar.gz

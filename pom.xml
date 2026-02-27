@@ -13,15 +13,16 @@ SPDX-License-Identifier: AGPL-3.0-only
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.zextras.carbonio.catalog</groupId>
   <artifactId>carbonio-catalog-service</artifactId>
-  <version>0.0.3</version>
+  <version>${revision}</version>
   <name>carbonio catalog service</name>
 
   <properties>
+    <revision>0.0.5</revision>
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <quarkus.platform.version>3.13.2</quarkus.platform.version>
+    <quarkus.platform.version>3.30.6</quarkus.platform.version>
     <surefire-plugin.version>3.4.0</surefire-plugin.version>
     <skip.open-api.schema.generation>false</skip.open-api.schema.generation>
   </properties>
@@ -58,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-maven-plugin</artifactId>
-      <version>3.12.0</version>
+      <version>3.13.0</version>
     </dependency>
 
     <dependency>
@@ -98,9 +99,34 @@ SPDX-License-Identifier: AGPL-3.0-only
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-open-api-maven-plugin</artifactId>
-        <version>3.12.0</version>
+        <version>3.13.0</version>
         <executions>
           <execution>
             <goals>
