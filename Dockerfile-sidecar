@@ -1,0 +1,17 @@
+FROM registry.dev.zextras.com/dev/carbonio-sidecar:latest
+
+# Service registration
+COPY package/carbonio-catalog.hcl /consul/config/
+
+# Setup files
+COPY package/carbonio-catalog-service-protocol.json /etc/carbonio/catalog/service-discover/service-protocol.json
+COPY package/carbonio-catalog-intentions.json       /etc/carbonio/catalog/service-discover/intentions.json
+COPY package/carbonio-catalog-policies.json         /etc/carbonio/catalog/service-discover/policies.json
+
+# Setup script
+COPY package/carbonio-catalog-setup /usr/local/bin/carbonio-catalog-setup
+RUN chmod +x /usr/local/bin/carbonio-catalog-setup
+
+ENV SERVICE_NAME=carbonio-catalog
+ENV SETUP_SCRIPT="carbonio-catalog-setup setup"
+ENV TOKEN_FILE=/etc/carbonio/catalog/service-discover/token
