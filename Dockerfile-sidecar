@@ -14,3 +14,4 @@ RUN chmod +x /usr/local/bin/carbonio-catalog-setup
 
 ENV SERVICE_NAME=carbonio-catalog
 ENV SETUP_SCRIPT="carbonio-catalog-setup setup"
+ENV TOKEN_FILE=/etc/carbonio/catalog/service-discover/token
