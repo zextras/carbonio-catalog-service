@@ -4,9 +4,9 @@ FROM registry.dev.zextras.com/dev/carbonio-sidecar:latest
 COPY package/carbonio-catalog.hcl /consul/config/
 
 # Setup files
-COPY package/carbonio-catalog-service-protocol.json /etc/carbonio/catalog/service-discover/
-COPY package/carbonio-catalog-intentions.json       /etc/carbonio/catalog/service-discover/
-COPY package/carbonio-catalog-policies.json         /etc/carbonio/catalog/service-discover/
+COPY package/carbonio-catalog-service-protocol.json /etc/carbonio/catalog/service-discover/service-protocol.json
+COPY package/carbonio-catalog-intentions.json       /etc/carbonio/catalog/service-discover/intentions.json
+COPY package/carbonio-catalog-policies.json         /etc/carbonio/catalog/service-discover/policies.json
 
 # Setup script
 COPY package/carbonio-catalog-setup /usr/local/bin/carbonio-catalog-setup
