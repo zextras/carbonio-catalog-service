@@ -6,13 +6,35 @@ After=network-online.target
 PartOf=carbonio-mta.target carbonio-proxy.target
 
 [Service]
-Type=simple
-ExecStart=/usr/bin/carbonio-catalog
+Type=notify
+NotifyAccess=all
+ExecStart=/bin/sh -c '\
+  /usr/bin/carbonio-catalog & \
+  APP_PID=$$! ; \
+  CATALOG_READY_PORT=$${CATALOG_PORT:-10000} ; \
+  CATALOG_READY_PORT_HEX=$$(printf "%%04X" "$$CATALOG_READY_PORT") ; \
+  timeout=60 ; elapsed=0 ; \
+  while [ $$elapsed -lt $$timeout ]; do \
+    if awk -v port="$$CATALOG_READY_PORT_HEX" \
+      '\''NR > 1 { split($$2, addr, ":"); if (toupper(addr[2]) == port && $$4 == "0A") { found=1; exit } } END { exit(found ? 0 : 1) }'\'' \
+      /proc/net/tcp /proc/net/tcp6 2>/dev/null; then \
+      systemd-notify --ready --status="catalog ready (port $$CATALOG_READY_PORT)" ; \
+      break ; \
+    fi ; \
+    sleep 1 ; elapsed=$$((elapsed + 1)) ; \
+  done ; \
+  if [ $$elapsed -ge $$timeout ]; then \
+    systemd-notify --status="catalog failed to become ready before timeout" ; \
+    kill $$APP_PID 2>/dev/null || true ; \
+    wait $$APP_PID 2>/dev/null || true ; \
+    exit 1 ; \
+  fi ; \
+  wait $$APP_PID'
 User=carbonio-catalog
 Group=carbonio-catalog
 Restart=on-failure
 RestartSec=15s
-TimeoutSec=60s
+TimeoutStartSec=120s
 TimeoutStopSec=120s
 
 # Hardening

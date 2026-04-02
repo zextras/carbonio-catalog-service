@@ -2,6 +2,7 @@
 Description=Carbonio Catalog Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
+Wants=service-discover.service
 After=network-online.target service-discover.service carbonio-catalog.service
 PartOf=service-discover.target
 
