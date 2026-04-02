@@ -1,6 +1,6 @@
 [Unit]
 Description=Carbonio Catalog Daemon
-Wants=network.target
+Wants=network.target carbonio-catalog-sidecar.service
 Requires=network-online.target
 After=network-online.target
 PartOf=carbonio-mta.target carbonio-proxy.target
