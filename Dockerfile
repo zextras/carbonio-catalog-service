@@ -12,4 +12,4 @@ ENV CONSUL_TOKEN_PATH=/etc/carbonio/catalog/service-discover/token
 RUN mkdir -p /etc/carbonio/catalog/service-discover/ \
     && touch /etc/carbonio/catalog/service-discover/token
 
-ENTRYPOINT ["java", "--enable-preview", "-jar", "quarkus-app/quarkus-run.jar"
+ENTRYPOINT ["java", "--enable-preview", "-jar", "quarkus-app/quarkus-run.jar"]
