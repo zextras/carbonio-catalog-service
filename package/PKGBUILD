@@ -19,7 +19,6 @@ depends=(
   "pending-setups"
 )
 source=(
-  "${pkgname}"
   "${pkgname}-intentions.json"
   "${pkgname}-legacy.service"
   "${pkgname}-policies.json"
@@ -36,7 +35,6 @@ source=(
 )
 
 sha256sums=(
-  '599d10048be4ae408c498bba33b157015006d61916d4a051cfdbf31933f130cc'
   '5fed7682316886fcd053b545c42a25ff2fc9d5da949e3da97134e70e8ab25450'
   'b0d97d24c23f0fe3610c90c07e24cd022a9b83de5cc0adcd8568a522c652a673'
   '376c53798291548ef9968a60b4dbef6fdd9c255a6dac11adc6b1cfcc42c2b727'
@@ -46,7 +44,7 @@ sha256sums=(
   '2d25c035543096e4a2de4206a0a852ee3ce3855838c474661cde6ed628ef7513'
   'fa91665cf06ba93b13cab20c486eb8da6a2c594c11c23e638ea54a4b87f8c699'
   '5b14e0d88272e89f79a21e432a4dbb3b3032e31528507e4c3aacfc056f82dc1d'
-  '79d20c49b0463a802f264772a99f39862f87c30ba3509f27a9ab4ed11271e6aa'
+  '8eeebf5d6e010a30bf7ad1bfa57ffd3e2b5329c5b86420ae4c865f7068529a54'
   '70ca4a16079af600db5849c0bcb768c0ea96e05d772ee483df0beef44a700113'
   '24af59455eac8fd95bfc48536e913f62e7eae24d99458e0663585f1024a8599f'
   '74784b308b0881668f06293f9f4d8a45a76c9a4ec06f0d94e3a151c03b8524af'
@@ -57,9 +55,6 @@ _package() {
     "${pkgdir}/usr/share/carbonio/carbonio-catalog"
   cp -a "${srcdir}/quarkus-app/"* \
     "${pkgdir}/usr/share/carbonio/carbonio-catalog/"
-
-  install -Dm755 "${srcdir}/carbonio-catalog" \
-    "${pkgdir}/usr/bin/carbonio-catalog"
 
   install -Dm755 "${srcdir}/carbonio-catalog-setup" \
     "${pkgdir}/usr/bin/carbonio-catalog-setup"

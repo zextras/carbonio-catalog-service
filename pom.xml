@@ -29,6 +29,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <dependencies>
     <dependency>
+      <groupId>com.zextras.carbonio</groupId>
+      <artifactId>carbonio-systemd-notify</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
     </dependency>
@@ -162,9 +167,30 @@ SPDX-License-Identifier: AGPL-3.0-only
         <configuration>
           <compilerArgs>
             <arg>-parameters</arg>
+            <arg>--enable-preview</arg>
           </compilerArgs>
           <source>${maven.compiler.release}</source>
           <target>${maven.compiler.release}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire-plugin.version}</version>
+        <configuration>
+          <argLine>${argLine} --enable-preview --enable-native-access=ALL-UNNAMED</argLine>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${surefire-plugin.version}</version>
+        <configuration>
+          <argLine>${argLine} --enable-preview --enable-native-access=ALL-UNNAMED</argLine>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
       <plugin>
