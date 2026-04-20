@@ -13,10 +13,6 @@ library(
 
 properties(defaultPipelineProperties())
 
-boolean isBuildingTag() {
-    return env.TAG_NAME ? true : false
-}
-
 pipeline {
     agent {
         node {
@@ -27,7 +23,6 @@ pipeline {
     environment {
         JAVA_OPTS = '-Dfile.encoding=UTF8'
         LC_ALL = 'C.UTF-8'
-        MVN_OPTS = '-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
@@ -45,48 +40,19 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Maven') {
             steps {
-                container('jdk-21') {
-                    sh """
-                        mvn ${MVN_OPTS} -DskipTests clean package
-                        tar czf package/carbonio-catalog-quarkus.tar.gz -C target/ quarkus-app
-                    """
+                script {
+                    mavenStage(
+                        profile         : '',
+                        deployArtifacts : true,
+                        extraTestArgs   : '-Dmaven.test.redirectTestOutputToFile=true',
+                        postBuildScript : 'tar czf package/carbonio-catalog-quarkus.tar.gz -C target/ quarkus-app',
+                    )
                 }
             }
         }
 
-        stage('Tests') {
-            when {
-                expression { params.SKIP_TESTS == false }
-            }
-            steps {
-                container('jdk-21') {
-                    sh "mvn ${MVN_OPTS} -Dmaven.test.redirectTestOutputToFile=true verify"
-                }
-            }
-            post {
-                always {
-                    junit allowEmptyResults: false, testResults: 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-
-        stage('SonarQube analysis') {
-            when {
-                expression { params.SKIP_TESTS == false }
-            }
-            environment {
-                SCANNER_HOME = tool 'SonarScanner'
-            }
-            steps {
-                container('jdk-21') {
-                    withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                        sh "mvn ${MVN_OPTS} sonar:sonar"
-                    }
-                }
-            }
-        }
         stage('Publish containers') {
             steps {
                 dockerStage([
@@ -104,22 +70,6 @@ pipeline {
                         ]
                 ])
 
-            }
-        }
-
-        stage('Deploy') {
-            when {
-                anyOf {
-                    branch 'devel'
-                    buildingTag()
-                }
-            }
-            steps {
-                container('jdk-21') {
-                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        sh "mvn ${MVN_OPTS} -s " +  SETTINGS_PATH + ' -DskipTests deploy'
-                    }
-                }
             }
         }
 
