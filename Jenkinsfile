@@ -44,7 +44,7 @@ pipeline {
             steps {
                 mavenStage(
                     profile         : '',
-                    deployArtifacts : true,
+                    deployArtifacts : false,
                     extraTestArgs   : '-Dmaven.test.redirectTestOutputToFile=true',
                     postBuildScript : 'tar czf package/carbonio-catalog-quarkus.tar.gz -C target/ quarkus-app',
                 )
