@@ -79,8 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>consul</artifactId>
-      <version>1.21.3</version>
+      <artifactId>testcontainers-consul</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -355,11 +354,28 @@ SPDX-License-Identifier: AGPL-3.0-only
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>2.0.5</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
         <groupId>io.quarkus.platform</groupId>
         <artifactId>quarkus-bom</artifactId>
         <version>${quarkus.platform.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-api</artifactId>
+        <version>3.7.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-transport-zerodep</artifactId>
+        <version>3.7.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
