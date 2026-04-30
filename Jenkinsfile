@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-    identifier: 'jenkins-lib-common@1.6.2',
+    identifier: 'jenkins-lib-common@1.7.0',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         remote: 'git@github.com:zextras/jenkins-lib-common.git',
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 mavenStage(
                     profile         : '',
-                    deployArtifacts : true,
+                    deployArtifacts : false,
                     extraTestArgs   : '-Dmaven.test.redirectTestOutputToFile=true',
                     postBuildScript : 'tar czf package/carbonio-catalog-quarkus.tar.gz -C target/ quarkus-app',
                 )
