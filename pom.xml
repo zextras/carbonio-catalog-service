@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <quarkus.platform.version>3.30.6</quarkus.platform.version>
+    <quarkus.platform.version>3.33.1</quarkus.platform.version>
     <surefire-plugin.version>3.4.0</surefire-plugin.version>
     <skip.open-api.schema.generation>false</skip.open-api.schema.generation>
   </properties>
@@ -179,6 +179,7 @@ SPDX-License-Identifier: AGPL-3.0-only
           <argLine>${argLine} --enable-preview --enable-native-access=ALL-UNNAMED</argLine>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <api.version>1.44</api.version>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -189,6 +190,7 @@ SPDX-License-Identifier: AGPL-3.0-only
           <argLine>${argLine} --enable-preview --enable-native-access=ALL-UNNAMED</argLine>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <api.version>1.44</api.version>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -252,11 +254,6 @@ SPDX-License-Identifier: AGPL-3.0-only
       <id>default</id>
       <name>Maven public</name>
       <url>https://repo.maven.apache.org/maven2/</url>
-    </repository>
-    <repository>
-      <id>java-net</id>
-      <name>Maven Java.net</name>
-      <url>https://maven.java.net/content/repositories/staging</url>
     </repository>
     <repository>
       <releases>
