@@ -17,6 +17,7 @@ url="https://www.zextras.com/"
 depends=(
   "carbonio-openjdk"
   "pending-setups"
+  "service-discover-base"
 )
 source=(
   "${pkgname}-intentions.json"
