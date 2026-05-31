@@ -54,6 +54,7 @@ pipeline {
                 dockerStage([
                         dockerfile: 'Dockerfile',
                         imageName : 'carbonio-catalog',
+                        platforms: ['linux/amd64', 'linux/arm64'] as Set,
                         ocLabels  : [
                                 title          : 'Carbonio Catalog Service'
                         ]
@@ -61,6 +62,7 @@ pipeline {
                 dockerStage([
                         dockerfile: 'Dockerfile-sidecar',
                         imageName : 'carbonio-catalog-sidecar',
+                        platforms: ['linux/amd64', 'linux/arm64'] as Set,
                         ocLabels  : [
                                 title : 'Carbonio Catalog Service Sidecar',
                         ]
