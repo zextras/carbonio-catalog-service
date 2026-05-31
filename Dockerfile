@@ -1,3 +1,9 @@
+# Prep stage runs on BUILDPLATFORM (amd64 CI builder) — no QEMU. Creates the
+# arch-independent service-discover dir/token so the final image needs no RUN.
+FROM --platform=$BUILDPLATFORM busybox AS prep
+RUN mkdir -p /staging/etc/carbonio/catalog/service-discover/ \
+    && touch /staging/etc/carbonio/catalog/service-discover/token
+
 FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
@@ -9,8 +15,7 @@ ENV CATALOG_HOST=0.0.0.0
 ENV CATALOG_PORT=10000
 ENV CONSUL_URL=http://consul:8500
 ENV CONSUL_TOKEN_PATH=/etc/carbonio/catalog/service-discover/token
-RUN mkdir -p /etc/carbonio/catalog/service-discover/ \
-    && touch /etc/carbonio/catalog/service-discover/token
+COPY --from=prep /staging/etc /etc
 
 ENV JDK_JAVA_OPTIONS="-Xms256m -Xmx512m"
 
