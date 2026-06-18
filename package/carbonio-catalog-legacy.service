@@ -22,7 +22,11 @@ TimeoutStopSec=120s
 
 # Hardening
 PrivateTmp=yes
-ProtectSystem=strict
+#ProtectSystem=strict
+ProtectSystem=yes
+ReadOnlyPaths=/usr
+ReadOnlyPaths=/boot
+ReadOnlyPaths=/efi
 NoNewPrivileges=yes
 PrivateDevices=yes
 ProtectHome=yes
