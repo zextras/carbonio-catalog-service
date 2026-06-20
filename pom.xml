@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-maven-plugin</artifactId>
-      <version>3.13.0</version>
+      <version>4.3.4</version>
     </dependency>
 
     <dependency>
@@ -130,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
       <plugin>
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-open-api-maven-plugin</artifactId>
-        <version>3.13.0</version>
+        <version>4.3.4</version>
         <executions>
           <execution>
             <goals>
