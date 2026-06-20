@@ -4,7 +4,7 @@ FROM --platform=$BUILDPLATFORM docker.io/library/busybox AS prep
 RUN mkdir -p /staging/etc/carbonio/catalog/service-discover/ \
     && touch /staging/etc/carbonio/catalog/service-discover/token
 
-FROM docker.io/library/eclipse-temurin:21-jdk
+FROM docker.io/library/eclipse-temurin:23-jdk
 
 WORKDIR /app
 
