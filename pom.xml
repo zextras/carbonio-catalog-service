@@ -26,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <surefire-plugin.version>3.4.0</surefire-plugin.version>
     <skip.open-api.schema.generation>false</skip.open-api.schema.generation>
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+    <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
   </properties>
 
   <dependencies>
@@ -103,6 +104,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <build>
     <plugins>
+      <!-- Maven Central dropped the "sonar" prefix from the org.codehaus.mojo group metadata, so
+           mvn sonar:sonar (run without -s in the SonarQube Analysis stage) cannot resolve the
+           plugin prefix unless the project declares it. The plugin binds no lifecycle goal. -->
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>${sonar-maven-plugin.version}</version>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
