@@ -1,5 +1,5 @@
 pkgname="carbonio-catalog"
-pkgver="0.5.3"
+pkgver="1.0.0"
 pkgrel="1"
 pkgdesc="Carbonio Catalog"
 pkgdesclong=(
