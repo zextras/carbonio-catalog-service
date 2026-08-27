@@ -103,6 +103,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <build>
     <plugins>
+      <!-- Maven Central dropped the "sonar" prefix from the org.codehaus.mojo group metadata, so
+           mvn sonar:sonar (run without -s in the SonarQube Analysis stage) cannot resolve the
+           plugin prefix unless the project declares it. The plugin binds no lifecycle goal.
+           Version pinned directly (not via property) so Renovate can track and bump it. -->
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>5.6.0.6792</version>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
