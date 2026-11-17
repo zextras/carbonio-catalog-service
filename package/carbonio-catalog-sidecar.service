@@ -4,7 +4,7 @@ Documentation=https://docs.zextras.com/
 Requires=network-online.target
 Wants=service-discover.service
 After=network-online.target service-discover.service carbonio-catalog.service
-PartOf=service-discover.target
+PartOf=service-discover.target carbonio-catalog.service
 # The token is written by the pending setup once Consul is bootstrapped.
 # Without it the sidecar cannot start: skip it instead of failing every
 # 15 s until then (CO-4746).
